@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Calendar</title>
+<style>
+  .calendar {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr); /* 100px for the hour column, and 1 fraction each for the 7 days */
+    grid-gap: 1px;
+    text-align: center;
+  }
+  .hour-header, .day-header {
+    font-weight: bold;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  .time-slot {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+    min-height: 50px; /* Adjust the height of the time slots */
+  }
+  .time-slot.selected {
+    background-color: #add8e6;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="calendar">
+    <div class="hour-header">Hour</div> <!-- Static header for hours -->
+    <div class="day-header">Sunday</div>
+    <div class="day-header">Monday</div>
+    <div class="day-header">Tuesday</div>
+    <div class="day-header">Wednesday</div>
+    <div class="day-header">Thursday</div>
+    <div class="day-header">Friday</div>
+    <div class="day-header">Saturday</div>
+
+    {% for hour in range(24) %}
+    <div class="hour-header">{{ hour }}:00</div> <!-- Hour header for each row -->
+    {% for day in range(7) %}
+    <div class="time-slot" data-day="{{ day }}" data-hour="{{ hour }}">
+      <!-- Time slots will be here -->
+    </div>
+    {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  let isMouseDown = false;
+  let selectedHours = [];
+
+  $(document).on('mousedown', '.time-slot', function() {
+    isMouseDown = true;
+    $(this).toggleClass('selected');
+    updateSelectedHours($(this));
+    return false; // prevent text selection
+  })
+  .on('mouseover', '.time-slot', function() {
+    if (isMouseDown) {
+      $(this).toggleClass('selected');
+      updateSelectedHours($(this));
+    }
+  })
+  .on('mouseup', function() {
+    isMouseDown = false;
+  });
+
+  function updateSelectedHours(element) {
+    let day = element.data('day');
+    let hour = element.data('hour');
+    let id = 'day-' + day + '-hour-' + hour;
+    let index = selectedHours.indexOf(id);
+    if (index > -1) {
+      selectedHours.splice(index, 1);
+    } else {
+      selectedHours.push(id);
+    }
+  }
+
+  // Bind to a button click to submit the data
+  $('#submit').click(function() {
+    $.ajax({
+      url: '/availability',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({availability: selectedHours}),
+      success: function(response) {
+        alert(response.message);
+      }
+    });
+  });
+
+  // Prevent the default right click context menu on time slots
+  $('.time-slot').on('contextmenu', function() {
+    return false;
+  });
+</script>
+
+</body>
+</html>
