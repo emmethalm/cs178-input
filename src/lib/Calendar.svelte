@@ -1,4 +1,6 @@
 <script lang="ts">
+  import GridItem from './GridItem.svelte';
+  import { mouseStatus } from './stores';
   import {
     DAYS_OF_WEEK,
     HOURS,
@@ -7,34 +9,12 @@
     TIME_ZONES,
     OFFSETS,
     type TimeZone,
+    getBlockId,
   } from './utils';
 
-  type MouseStatus =
-    | {
-        isDown: true;
-        fill: boolean;
-      }
-    | {
-        isDown: false;
-        fill: undefined;
-      };
-  type BlockId = `day-${number}-hour-${number}`;
+  export let mode: 'availability' | 'confirmation' = 'availability';
 
   let timeZones: TimeZone[] = ['EST'];
-
-  let mouseStatus: MouseStatus = { isDown: false, fill: undefined };
-  let selectedHours: Record<BlockId, boolean> = {};
-
-  $: isSelected = (dayIndex: number, hour: number) =>
-    selectedHours[`day-${dayIndex}-hour-${hour}`];
-
-  function toggleHour(dayIndex: number, hour: number, toggle?: boolean) {
-    const blockId: BlockId = `day-${dayIndex}-hour-${hour}`;
-    selectedHours = {
-      ...selectedHours,
-      [blockId]: toggle ?? !selectedHours[blockId],
-    };
-  }
 
   // Bind to a button click to submit the data
   // function submit() {
@@ -59,7 +39,9 @@
       <div class="tz-header">
         <select bind:value={timeZones[i]}>
           {#each TIME_ZONES as tz}
-            <option value={tz}>{tz} ({(OFFSETS[tz] >= 0 ? '+' : '') + OFFSETS[tz]})</option>
+            <option value={tz}>
+              {tz} ({(OFFSETS[tz] >= 0 ? '+' : '') + OFFSETS[tz]})
+            </option>
           {/each}
         </select>
 
@@ -91,32 +73,14 @@
       {/each}
 
       {#each DAYS_OF_WEEK as _, dayIndex}
-        <div
-          class={`time-slot ${isSelected(dayIndex, hour) ? 'selected' : ''}`}
-          on:contextmenu|self|preventDefault|stopPropagation={() => false}
-          on:mousedown|self|preventDefault={(event) => {
-            // prevent on right click
-            if (event.button === 2) return;
-            mouseStatus = {
-              isDown: true,
-              fill: !isSelected(dayIndex, hour),
-            };
-            toggleHour(dayIndex, hour, mouseStatus.fill);
-          }}
-          on:mouseover={() =>
-            mouseStatus.isDown && toggleHour(dayIndex, hour, mouseStatus.fill)}
-          on:focus={() => toggleHour(dayIndex, hour, true)}
-          role="option"
-          tabindex="0"
-          aria-selected={isSelected(dayIndex, hour)}
-        ></div>
+        <GridItem blockId={getBlockId(dayIndex, hour)} />
       {/each}
     {/each}
   </div>
 </div>
 
 <svelte:document
-  on:mouseup={() => (mouseStatus = { isDown: false, fill: undefined })}
+  on:mouseup={() => mouseStatus.set({ isDown: false, fill: undefined })}
 />
 
 <style>
@@ -160,18 +124,11 @@
     text-align: center;
   }
 
-  .time-slot {
-    padding: 10px;
-    border: 1px solid #bdc3c7;
-    background-color: #ecf0f1;
-    cursor: pointer;
-    min-height: 50px;
-    /* Adjust the height of the time slots */
-  }
-
-  .time-slot.selected {
-    background-color: #3498db;
-    color: #ffffff;
+  .hour-header {
+    display: flex;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
   }
 
   .hour-header.working-hours {

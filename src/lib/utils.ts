@@ -1,3 +1,7 @@
+export type BlockId = `day-${number}-hour-${number}`;
+
+export const getBlockId = (day: number, hour: number): BlockId => `day-${day}-hour-${hour}`
+
 export const getHourType = (rawHour: number) => {
   const hour = rawHour % 24;
   if (9 <= hour && hour <= 17) {

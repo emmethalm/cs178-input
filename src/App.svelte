@@ -1,10 +1,13 @@
 <script lang="ts">
   import Calendar from './lib/Calendar.svelte';
+
+  let mode: 'availability' | 'confirmation' = 'availability';
 </script>
 
 <main>
   <div class="intro">
     <h1>Please fill in your availability below!</h1>
+
     <p>
       You have been invited to a meeting by <strong>Elena Glassman</strong> with
       the meeting subject <strong>CS178 Final Project</strong>. There are
@@ -12,9 +15,17 @@
       as well as the minimum number of attendees who must be present in order for
       you to join the meeting. Happy meeting!
     </p>
+
+    <button
+      type="button"
+      on:click={() =>
+        (mode = mode === 'availability' ? 'confirmation' : 'availability')}
+    >
+      {mode === 'availability' ? 'Next' : 'Back'}
+    </button>
   </div>
 
-  <Calendar />
+  <Calendar {mode} />
 </main>
 
 <style>
