@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { DAYS_OF_WEEK, HOURS, getHourType, displayHour } from './utils';
+
   type TimeZone = {
     name: string;
     offset: number;
@@ -14,25 +16,6 @@
       };
   type BlockId = `day-${number}-hour-${number}`;
 
-  const getHourType = (rawHour: number) => {
-    const hour = rawHour % 24;
-    if (9 <= hour && hour <= 17) {
-      return 'working-hours';
-    }
-    if ((7 <= hour && hour < 9) || (17 < hour && hour < 23)) {
-      return 'waking-hours';
-    }
-    return 'sleeping-hours';
-  };
-
-  const displayHour = (rawHour: number) => {
-    const hour = rawHour % 24;
-    if (hour < 12) {
-      return `${hour}:00 AM`;
-    }
-    return `${hour % 12 || 12}:00 PM`;
-  };
-
   let timeZones: TimeZone[] = [
     {
       name: 'EST',
@@ -40,22 +23,12 @@
     },
   ];
 
-  const DAYS_OF_WEEK = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
-
-  const HOURS = Array.from({ length: 24 }, (_, i) => i + 8);
-
   let mouseStatus: MouseStatus = { isDown: false, fill: undefined };
   let selectedHours: Record<BlockId, boolean> = {};
+
   $: isSelected = (dayIndex: number, hour: number) =>
     selectedHours[`day-${dayIndex}-hour-${hour}`];
+
   function toggleHour(dayIndex: number, hour: number, toggle?: boolean) {
     const blockId: BlockId = `day-${dayIndex}-hour-${hour}`;
     selectedHours = {
@@ -85,7 +58,11 @@
   >
     {#each timeZones as timeZone, i}
       <div class="hour-header">
-        {timeZone.name}
+        <select bind:value={timeZones[i]}>
+          <option value="EST">EST</option>
+          <option value="PST">PST</option>
+          <option value="GMT">GMT</option>
+        </select>
 
         <!-- "Add" button positioned to right -->
         {#if i === timeZones.length - 1}
