@@ -122,7 +122,10 @@
       {#each DAYS_OF_WEEK as _, dayIndex}
         <div
           class={`time-slot ${isSelected(dayIndex, hour) ? 'selected' : ''}`}
-          on:mousedown|self|preventDefault={() => {
+          on:contextmenu|self|preventDefault|stopPropagation={() => false}
+          on:mousedown|self|preventDefault={(event) => {
+            // prevent on right click
+            if (event.button === 2) return;
             mouseStatus = {
               isDown: true,
               fill: !isSelected(dayIndex, hour),
@@ -132,7 +135,6 @@
           on:mouseover={() =>
             mouseStatus.isDown && toggleHour(dayIndex, hour, mouseStatus.fill)}
           on:focus={() => toggleHour(dayIndex, hour, true)}
-          on:contextmenu|self|preventDefault={() => null}
           role="option"
           tabindex="0"
           aria-selected={isSelected(dayIndex, hour)}
