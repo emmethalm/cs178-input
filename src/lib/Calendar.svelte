@@ -12,8 +12,6 @@
     getBlockId,
   } from './utils';
 
-  export let mode: 'availability' | 'confirmation' = 'availability';
-
   let timeZones: TimeZone[] = ['EST'];
 
   // Bind to a button click to submit the data

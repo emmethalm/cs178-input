@@ -1,7 +1,6 @@
 <script lang="ts">
   import Calendar from './lib/Calendar.svelte';
-
-  let mode: 'availability' | 'confirmation' = 'availability';
+  import { mode } from './lib/stores';
 </script>
 
 <main>
@@ -19,13 +18,15 @@
     <button
       type="button"
       on:click={() =>
-        (mode = mode === 'availability' ? 'confirmation' : 'availability')}
+        mode.update((mode) =>
+          mode === 'availability' ? 'confirmation' : 'availability'
+        )}
     >
-      {mode === 'availability' ? 'Next' : 'Back'}
+      {$mode === 'availability' ? 'Next' : 'Back'}
     </button>
   </div>
 
-  <Calendar {mode} />
+  <Calendar />
 </main>
 
 <style>

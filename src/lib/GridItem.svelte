@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { mouseStatus, selectedHours } from './stores';
+  import { mode, mouseStatus, selectedHours } from './stores';
   import type { BlockId } from './utils';
 
+  let tolerance = 10; // preference from 0 to 10
+
   export let blockId: BlockId;
-  export let mode: 'availability' | 'confirmation' = 'availability';
 
   $: selected = $selectedHours[blockId];
 
@@ -18,7 +19,7 @@
 <div
   class={`time-slot ${
     selected
-      ? mode === 'availability'
+      ? $mode === 'availability'
         ? 'selected-availability'
         : 'selected-confirmation'
       : ''
@@ -40,8 +41,15 @@
   tabindex="0"
   aria-selected={selected}
 >
-  {#if selected && mode === 'confirmation'}
-    <input type="range" min={0} max={10} />
+  {#if selected && $mode === 'confirmation'}
+    <input type="range" bind:value={tolerance} min={1} max={10} />
+    {#if tolerance >= 8}
+      <span>Definitely</span>
+    {:else if tolerance >= 4}
+      <span>Depends</span>
+    {:else}
+      <span>If necessary</span>
+    {/if}
   {/if}
 </div>
 
@@ -52,7 +60,9 @@
     background-color: #ecf0f1;
     cursor: pointer;
     min-height: 50px;
-    /* Adjust the height of the time slots */
+    display: flex;
+    flex-direction: column;
+    place-items: center;
   }
 
   .time-slot.selected-availability {
