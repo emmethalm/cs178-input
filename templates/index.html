@@ -53,6 +53,21 @@
     color: #34495e;
   }
 
+  .hour-header.working-hours {
+  background: green;
+  color: white;
+}
+
+.hour-header.waking-hours {
+  background: #74f29a;
+  color: white;
+}
+
+.hour-header.sleeping-hours {
+  background: darkblue;
+  color: white;
+}
+
 </style>
 </head>
 <body>
@@ -66,8 +81,8 @@
 <div class="container">
   <div class="calendar">
     <div class="hour-header">PST</div>
-    <div class="hour-header">GMT</div>
     <div class="hour-header">EST</div>
+    <div class="hour-header">GMT</div>
   
     <div class="day-header">Sunday</div>
     <div class="day-header">Monday</div>
@@ -77,14 +92,23 @@
     <div class="day-header">Friday</div>
     <div class="day-header">Saturday</div>
 
-    {% for hour in range(24) %}
-    <div class="hour-header">{{ ((hour+7)%24-3)%12 if ((hour+7)%24-3)%12 != 0 else 12 }}:00 {{ 'AM' if ((hour+7)%24-3) < 12 else 'PM' }} PST</div>
-    <div class="hour-header">{{ ((hour+7)%24+5)%12 if ((hour+7)%24+5)%12 != 0 else 12 }}:00 {{ 'AM' if ((hour+7)%24+5) < 12 else 'PM' }} GMT</div>
-    <div class="hour-header">{{ ((hour+7)%24)%12 if ((hour+7)%24)%12 != 0 else 12 }}:00 {{ 'AM' if ((hour+7)%24) < 12 else 'PM' }} EST</div> 
+    {% for hour in range(8, 32) %}
+    <div class="hour-header {{ 'working-hours' if 9 <= (hour-3)%24 <= 17 else 'waking-hours' if 7 <= (hour-3)%24 < 9 or 17 < (hour-3)%24 < 23 else 'sleeping-hours' }}">
+      {{ (hour-3)%12 if (hour-3)%12 != 0 else 12 }}:00 {{ 'AM' if (hour-3)%24 < 12 else 'PM' }} PST
+    </div>
+    <div class="hour-header {{ 'working-hours' if 9 <= hour%24 <= 17 else 'waking-hours' if 7 <= hour%24 < 9 or 17 < hour%24 < 23 else 'sleeping-hours' }}">
+      {{ hour%12 if hour%12 != 0 else 12 }}:00 {{ 'AM' if hour%24 < 12 else 'PM' }} EST
+    </div> 
+    <div class="hour-header {{ 'working-hours' if 9 <= (hour+5)%24 <= 17 else 'waking-hours' if 7 <= (hour+5)%24 < 9 or 17 < (hour+5)%24 < 23 else 'sleeping-hours' }}">
+      {{ (hour+5)%12 if (hour+5)%12 != 0 else 12 }}:00 {{ 'AM' if (hour+5)%24 < 12 else 'PM' }} GMT
+    </div>
+    
     {% for day in range(7) %}
     <div class="time-slot" data-day="{{ day }}" data-hour="{{ hour }}"></div>
     {% endfor %}
     {% endfor %}
+
+
   </div>
   </div>
 </div>
