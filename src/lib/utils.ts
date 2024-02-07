@@ -28,3 +28,15 @@ export const DAYS_OF_WEEK = [
 ];
 
 export const HOURS = Array.from({ length: 24 }, (_, i) => i + 8);
+
+export const TIME_ZONES = ['GMT', 'EST', 'CST', 'MST', 'PST'] as const;
+
+export type TimeZone = typeof TIME_ZONES[number];
+
+export const OFFSETS: Record<TimeZone, number> = {
+  GMT: 0,
+  EST: -5,
+  CST: -6,
+  MST: -7,
+  PST: -8,
+};

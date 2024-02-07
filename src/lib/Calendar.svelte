@@ -1,10 +1,14 @@
 <script lang="ts">
-  import { DAYS_OF_WEEK, HOURS, getHourType, displayHour } from './utils';
+  import {
+    DAYS_OF_WEEK,
+    HOURS,
+    getHourType,
+    displayHour,
+    TIME_ZONES,
+    OFFSETS,
+    type TimeZone,
+  } from './utils';
 
-  type TimeZone = {
-    name: string;
-    offset: number;
-  };
   type MouseStatus =
     | {
         isDown: true;
@@ -16,12 +20,7 @@
       };
   type BlockId = `day-${number}-hour-${number}`;
 
-  let timeZones: TimeZone[] = [
-    {
-      name: 'EST',
-      offset: -5,
-    },
-  ];
+  let timeZones: TimeZone[] = ['EST'];
 
   let mouseStatus: MouseStatus = { isDown: false, fill: undefined };
   let selectedHours: Record<BlockId, boolean> = {};
@@ -56,26 +55,21 @@
     class="calendar"
     style={`grid-template-columns: repeat(${timeZones.length}, 8rem) repeat(${DAYS_OF_WEEK.length}, 1fr)`}
   >
-    {#each timeZones as timeZone, i}
-      <div class="hour-header">
+    {#each timeZones as _, i}
+      <div class="tz-header">
         <select bind:value={timeZones[i]}>
-          <option value="EST">EST</option>
-          <option value="PST">PST</option>
-          <option value="GMT">GMT</option>
+          {#each TIME_ZONES as tz}
+            <option value={tz}>{tz} ({(OFFSETS[tz] >= 0 ? '+' : '') + OFFSETS[tz]})</option>
+          {/each}
         </select>
 
         <!-- "Add" button positioned to right -->
         {#if i === timeZones.length - 1}
           <button
             class="add-time"
+            title="Add a new time zone"
             on:click={() => {
-              timeZones = [
-                ...timeZones,
-                {
-                  name: 'GMT',
-                  offset: 0,
-                },
-              ];
+              timeZones = [...timeZones, 'GMT'];
             }}
           >
             +
@@ -89,10 +83,10 @@
     {/each}
 
     {#each HOURS as hour}
-      {#each timeZones as timeZone}
-        <div class={`hour-header ${getHourType(hour + timeZone.offset)}`}>
-          {displayHour(hour + timeZone.offset)}
-          {timeZone.name}
+      {#each timeZones as tz}
+        <div class={`hour-header ${getHourType(hour + OFFSETS[tz])}`}>
+          {displayHour(hour + OFFSETS[tz])}
+          {tz}
         </div>
       {/each}
 
@@ -128,14 +122,27 @@
 <style>
   .calendar {
     display: grid;
+    /* columns are specified inline */
     grid-gap: 1px;
     text-align: center;
     margin: auto;
   }
 
-  .hour-header,
-  .day-header {
+  select {
+    background-color: #2c3e50;
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  .tz-header {
     position: relative;
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+  }
+
+  .day-header {
     font-weight: bold;
     background-color: #2c3e50;
     color: #ffffff;
