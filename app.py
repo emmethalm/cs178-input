@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+# static routes (i.e. main HTML page built by Svelte)
+# are automatically served by Flask under the base path
+app = Flask(__name__, static_url_path="")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/cs178-input.db'
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -12,7 +14,7 @@ class User(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 @app.route('/availability', methods=['POST'])
 def set_availability():
@@ -28,5 +30,6 @@ def get_availability():
     return jsonify({'users': [user.availability for user in users]}), 200
 
 if __name__ == "__main__":
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
