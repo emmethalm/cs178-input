@@ -31,7 +31,7 @@ export const DAYS_OF_WEEK = [
   'Saturday',
 ];
 
-export const HOURS = Array.from({ length: 24 }, (_, i) => i + 8);
+export const HOURS = Array.from({ length: 24 }, (_, i) => i + 13);
 
 export const TIME_ZONES = ['GMT', 'EST', 'CST', 'MST', 'PST'] as const;
 
