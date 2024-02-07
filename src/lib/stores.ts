@@ -15,4 +15,6 @@ export type MouseStatus =
 
 export const mouseStatus = writable<MouseStatus>({ isDown: false, fill: undefined });
 
-export const mode = writable<'availability' | 'confirmation'>('availability');
+export type CalendarMode = 'availability' | 'confirmation';
+
+export const mode = writable<CalendarMode>('availability');

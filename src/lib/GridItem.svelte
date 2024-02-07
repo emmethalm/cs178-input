@@ -1,6 +1,6 @@
 <script lang="ts">
   import { mode, mouseStatus, selectedHours } from './stores';
-  import type { BlockId } from './utils';
+  import { maxAttendees, type BlockId } from './utils';
 
   let tolerance = 10; // preference from 0 to 10
 
@@ -45,14 +45,15 @@
   aria-selected={selected}
 >
   {#if selected && $mode === 'confirmation'}
-    <input type="range" bind:value={tolerance} min={1} max={10} />
-    {#if tolerance >= 8}
+    <input type="range" bind:value={tolerance} min={1} max={maxAttendees} />
+    <span>{'😁'.repeat(tolerance)}{'❌'.repeat(maxAttendees-tolerance)}</span>
+    <!-- {#if tolerance >= 8}
       <span>Definitely</span>
     {:else if tolerance >= 4}
       <span>Depends</span>
     {:else}
       <span>If necessary</span>
-    {/if}
+    {/if} -->
   {/if}
 </div>
 
@@ -69,6 +70,7 @@
 
   .available {
     cursor: pointer;
+    opacity: 0.8;
   }
 
   .time-slot.selected-availability {

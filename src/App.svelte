@@ -1,6 +1,7 @@
 <script lang="ts">
   import Calendar from './lib/Calendar.svelte';
-  import { mode } from './lib/stores';
+  import { mode, selectedHours } from './lib/stores';
+  import { maxAttendees } from './lib/utils';
 </script>
 
 <main>
@@ -10,17 +11,24 @@
     <p>
       You have been invited to a meeting by <strong>Elena Glassman</strong> with
       the meeting subject <strong>CS178 Final Project</strong>. There are
-      <strong>5</strong> other invitees. Please indicate your availability below
-      as well as the minimum number of attendees who must be present in order for
-      you to join the meeting. Happy meeting!
+      <strong>{maxAttendees}</strong> other invitees. Please indicate your availability below
+      as well as the <em>minimum number of attendees who must be present in order for
+      you to join the meeting</em>. Happy meeting!
     </p>
 
     <button
       type="button"
-      on:click={() =>
-        mode.update((mode) =>
-          mode === 'availability' ? 'confirmation' : 'availability'
-        )}
+      on:click={() => {
+        if ($mode === 'availability') {
+          if (Object.values($selectedHours).some(Boolean)) {
+            mode.set('confirmation');
+          } else {
+            alert('Please select at least one meeting slot');
+          }
+        } else {
+          mode.set('availability');
+        }
+      }}
     >
       {$mode === 'availability' ? 'Next' : 'Back'}
     </button>

@@ -44,3 +44,5 @@ export const OFFSETS: Record<TimeZone, number> = {
   MST: -7,
   PST: -8,
 };
+
+export const maxAttendees = 10;
