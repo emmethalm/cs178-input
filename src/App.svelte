@@ -24,6 +24,10 @@
     >
       {$mode === 'availability' ? 'Next' : 'Back'}
     </button>
+
+    {#if $mode === 'confirmation'}
+      <button type="submit">Submit</button>
+    {/if}
   </div>
 
   <Calendar />

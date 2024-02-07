@@ -17,17 +17,17 @@
 </script>
 
 <div
-  class={`time-slot ${
+  class={`time-slot ${$mode === 'availability' ? 'available' : ''} ${
     selected
       ? $mode === 'availability'
         ? 'selected-availability'
         : 'selected-confirmation'
       : ''
   }`}
-  on:contextmenu|self|preventDefault|stopPropagation={() => false}
+  on:contextmenu|self|preventDefault={() => false}
   on:mousedown|self|preventDefault={(event) => {
     // prevent on right click
-    if (event.button === 2) return;
+    if (event.button === 2 || $mode !== 'availability') return;
     const fill = !selected;
     mouseStatus.set({
       isDown: true,
@@ -35,7 +35,10 @@
     });
     toggleHour(fill);
   }}
-  on:mouseover={() => $mouseStatus.isDown && toggleHour($mouseStatus.fill)}
+  on:mouseover={() =>
+    $mode === 'availability' &&
+    $mouseStatus.isDown &&
+    toggleHour($mouseStatus.fill)}
   on:focus={() => toggleHour(true)}
   role="option"
   tabindex="0"
@@ -58,11 +61,14 @@
     padding: 10px;
     border: 1px solid #bdc3c7;
     background-color: #ecf0f1;
-    cursor: pointer;
     min-height: 50px;
     display: flex;
     flex-direction: column;
     place-items: center;
+  }
+
+  .available {
+    cursor: pointer;
   }
 
   .time-slot.selected-availability {
