@@ -12,7 +12,8 @@
     <p>
       You have been invited to a meeting by <strong>Elena Glassman</strong> with
       the meeting subject <strong>CS178 Final Project</strong>. There are
-      <strong>{maxAttendees}</strong> other invitees. Happy meeting!
+      <strong>{maxAttendees}</strong> other invitees. 8 attendees are based in 
+      <strong>EST</strong> and 2 are based in <strong>PST</strong>. Happy meeting!
     </p>
 
     <ModeButton />
