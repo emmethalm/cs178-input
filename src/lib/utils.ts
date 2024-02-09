@@ -46,3 +46,7 @@ export const OFFSETS: Record<TimeZone, number> = {
 };
 
 export const maxAttendees = 10;
+
+export type ChangeEvent = Event & {
+  currentTarget: EventTarget & HTMLInputElement;
+}

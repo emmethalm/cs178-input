@@ -1,6 +1,7 @@
 <script lang="ts">
   import Calendar from './lib/Calendar.svelte';
-  import { mode, selectedHours } from './lib/stores';
+  import ModeButton from './lib/ModeButton.svelte';
+  import { mode, allCells } from './lib/stores';
   import { maxAttendees } from './lib/utils';
 </script>
 
@@ -11,27 +12,16 @@
     <p>
       You have been invited to a meeting by <strong>Elena Glassman</strong> with
       the meeting subject <strong>CS178 Final Project</strong>. There are
-      <strong>{maxAttendees}</strong> other invitees. Please indicate your availability below
-      as well as the <em>minimum number of attendees who must be present in order for
-      you to join the meeting</em>. Happy meeting!
+      <strong>{maxAttendees}</strong> other invitees. Happy meeting!
     </p>
 
-    <button
-      type="button"
-      on:click={() => {
-        if ($mode === 'availability') {
-          if (Object.values($selectedHours).some(Boolean)) {
-            mode.set('confirmation');
-          } else {
-            alert('Please select at least one meeting slot');
-          }
-        } else {
-          mode.set('availability');
-        }
-      }}
-    >
-      {$mode === 'availability' ? 'Next' : 'Back'}
-    </button>
+    <ModeButton />
+
+    {#if $mode === 'confirmation'}
+      <p>
+        Slide left until you <em>wouldn't attend</em> with that many people.
+      </p>
+    {/if}
 
     {#if $mode === 'confirmation'}
       <button type="submit">Submit</button>
@@ -44,7 +34,7 @@
 <style>
   .intro {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 4em;
   }
 
   .intro h1 {
@@ -53,7 +43,7 @@
   }
 
   .intro p {
-    max-width: 600px;
+    max-width: 24em;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.6;

@@ -12,7 +12,7 @@
     getBlockId,
   } from './utils';
 
-  let timeZones: TimeZone[] = ['EST'];
+  let timeZones: TimeZone[] = ['EST', 'PST'];
 
   // Bind to a button click to submit the data
   // function submit() {
@@ -78,14 +78,14 @@
 </div>
 
 <svelte:document
-  on:mouseup={() => mouseStatus.set({ isDown: false, fill: undefined })}
+  on:mouseup={() => mouseStatus.set({ isDown: false, targetStatus: undefined })}
 />
 
 <style>
   .calendar {
     display: grid;
     /* columns are specified inline */
-    grid-gap: 1px;
+    gap: 1px;
     text-align: center;
     margin: auto;
   }
@@ -110,6 +110,7 @@
     color: #ffffff;
     padding: 10px;
     border: 1px solid #bdc3c7;
+    min-width: 8rem;
   }
 
   .add-time {
