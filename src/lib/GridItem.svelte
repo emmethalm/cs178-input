@@ -68,8 +68,8 @@
 
   $: cellStyle = (() => {
     if (cellData.cellStatus === false) {
-      if ($mode === 'confirmation') return 'available-disabled';
-      return 'available';
+      if ($mode === 'confirmation') return 'empty-dark';
+      return 'empty-light';
     }
     if (cellData.cellStatus === 'available') return 'selected-availability';
     if (cellData.cellStatus === 'configuring') return 'selected-confirmation';
@@ -88,7 +88,7 @@
   tabindex="0"
   aria-selected={Boolean(cellData)}
 >
-  {#if cellData.cellStatus !== false}
+  {#if $mode === 'confirmation' && cellData.cellStatus !== false}
     <input
       type="range"
       bind:value={cellData.tolerance}
@@ -117,12 +117,17 @@
     place-items: center;
   }
 
-  .available {
+  .disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .empty-light {
     cursor: pointer;
     opacity: 0.8;
   }
 
-  .available-disabled {
+  .empty-dark {
     cursor: not-allowed;
     background-color: #bdc3c7;
   }

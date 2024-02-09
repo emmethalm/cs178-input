@@ -2,7 +2,6 @@
   import GridItem from './GridItem.svelte';
   import { mouseStatus } from './stores';
   import {
-    DAYS_OF_WEEK,
     HOURS,
     getHourType,
     displayHour,
@@ -13,6 +12,8 @@
   } from './utils';
 
   let timeZones: TimeZone[] = ['EST', 'PST'];
+
+  let days = ['Friday 9 Feb', 'Saturday 10 Feb', 'Sunday 11 Feb'];
 
   // Bind to a button click to submit the data
   // function submit() {
@@ -31,7 +32,7 @@
 <div class="container">
   <div
     class="calendar"
-    style={`grid-template-columns: repeat(${timeZones.length}, 8rem) repeat(${DAYS_OF_WEEK.length}, 1fr)`}
+    style={`grid-template-columns: repeat(${timeZones.length}, 8rem) repeat(${days.length}, 1fr)`}
   >
     {#each timeZones as _, i}
       <div class="tz-header">
@@ -58,7 +59,7 @@
       </div>
     {/each}
 
-    {#each DAYS_OF_WEEK as day}
+    {#each days as day}
       <div class="day-header">{day}</div>
     {/each}
 
@@ -70,7 +71,7 @@
         </div>
       {/each}
 
-      {#each DAYS_OF_WEEK as _, dayIndex}
+      {#each days as _, dayIndex}
         <GridItem blockId={getBlockId(dayIndex, hour)} />
       {/each}
     {/each}

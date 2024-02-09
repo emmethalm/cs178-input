@@ -18,15 +18,14 @@
 
     <ModeButton />
 
-    {#if $mode === 'confirmation'}
+    <div style={`opacity: ${$mode === 'confirmation' ? 1 : 0}`}>
       <p>
         Slide left until you <em>wouldn't attend</em> with that many people.
       </p>
-    {/if}
-
-    {#if $mode === 'confirmation'}
-      <button type="submit">Submit</button>
-    {/if}
+      <button type="submit" disabled={$mode !== 'confirmation'}>
+        Submit
+      </button>
+    </div>
   </div>
 
   <Calendar />
